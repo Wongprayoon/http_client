@@ -11,8 +11,9 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+# HTTP_Client
+
+Flutter package wrap around Http package.
 
 ## Features
 
@@ -25,11 +26,55 @@ start using the package.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+Add package
+
+```yaml
+dependencies:
+  http_client:
+    git:
+      url: git://github.com/wongprayoon/http_client.git
+      ref: main
+```
 
 ```dart
-const like = 'sample';
+var http = HttpClient();
+
+/// Set Token Schema using default implementation of TotkaSchema ([TokenWithRefreshTokenSchema])
+http.setTokenSchema(
+  TokenWithRefreshTokenSchema(
+    Uri.parse("<refresh token endpoint>"),
+    Uri.parse("<sign in endpoint>"),
+    (p) => p['jwtToken'],
+    (p) => jsonEncode({'refreshToken': p['refreshToken']}),
+    jsonEncode({'refreshToken': token.refreshToken}),
+    jsonEncode({
+      "username": username,
+      "password": password
+    }),
+    DateTime.now(),
+    '<jwtToken>',
+  )
+);
+
+/// Calling
+var response = await http.onFetch(
+  auth: false,
+  builder: (client, headers) => client.post(
+      uri.build('/user/signin'),
+      headers: headers,
+      body: jsonEncode(
+        {
+	  "username": username,
+	  "password": password,
+        }
+      ),
+    )
+  );
+if (response is HttpResponseOk) {
+  // on 200 http response
+}
+// otherwise throw
+throw response;
 ```
 
 ## Additional information
