@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:http_client/src/model/model.dart';
 
-export 'model/model.dart';
-
 class HttpClient {
   final Client _client = Client();
   TokenSchema? _tokenBuilder;
