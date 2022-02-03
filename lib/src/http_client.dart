@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:http_client/src/model/model.dart';
+
+import 'model/model.dart';
 
 class HttpClient {
   final Client _client = Client();
   TokenSchema? _tokenBuilder;
 
   /// [onFetch] is a wrapper function around [Http] package.
-  /// 
+  ///
   /// This functions produce header depend on token schema
   /// RETURN [HttpResponse]
   Future<HttpResponse> onFetch({
@@ -74,8 +75,8 @@ class HttpClient {
   }
 
   /// [setTokenSchema] is setter function for settting token schema.
-  /// 
-  /// 
+  ///
+  ///
   void setTokenSchema(TokenSchema tokenSchema) => _tokenBuilder = tokenSchema;
 
   void dispose() => _client.close();
@@ -83,13 +84,13 @@ class HttpClient {
 
 abstract class TokenSchema {
   /// return header
-  /// 
+  ///
   /// limitation on json body only
   Future<Map<String, String>> build({required bool json});
 }
 
 /// [TokenWithRefreshTokenSchema] is a congrete class.
-/// 
+///
 /// Implemented in a traditional ways of api authentication flow.
 class TokenWithRefreshTokenSchema implements TokenSchema {
   final HttpClient _http = HttpClient();
