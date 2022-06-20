@@ -15,6 +15,7 @@ class HttpClient {
   Future<HttpResponse> onFetch({
     bool auth = true,
     bool json = true,
+    bool decode = true,
     required Future<Response> Function(Client, Map<String, String>? header)
         builder,
   }) async {
@@ -24,7 +25,7 @@ class HttpClient {
     try {
       final header = await _generateHeader(auth, json);
       final response = await builder(_client, header);
-      return _handleResponse(response);
+      return _handleResponse(response, decode);
     } on ClientException catch (e) {
       return HttpResponseClientError(message: e.message);
     } on ArgumentError catch (e) {
@@ -44,9 +45,10 @@ class HttpClient {
     return null;
   }
 
-  HttpResponse _handleResponse(Response response) {
+  HttpResponse _handleResponse(Response response, bool decode) {
     if (response.statusCode == 200) {
-      return HttpResponseOk(jsonDecode(response.body));
+      if (decode) return HttpResponseOk(jsonDecode(response.body));
+      return HttpResponseOk(response.body);
     } else if (response.statusCode == 204) {
       return const HttpResponseNoContent();
     } else if (response.statusCode == 400) {
